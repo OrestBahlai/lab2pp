@@ -99,3 +99,34 @@ def userApi(request, userId):
         except ObjectDoesNotExist:
             return JsonResponse({'message': 'Invalid userId'}, status=400)
 
+def orderApi(request, orderId):
+    if request.method == 'GET':
+        try:
+            order = Order.objects.get(orderId=orderId)
+            order_serializer = OrderSerializer(order)
+            return JsonResponse(order_serializer.data, safe=False)
+        except ObjectDoesNotExist:
+            return JsonResponse({'message': 'Order not found'}, status=404)
+
+    elif request.method == 'POST':
+        try:
+            data = JSONParser().parse(request)
+            order_serializer = OrderSerializer(data=data)
+            if order_serializer.is_valid():
+                order_serializer.save()
+                return JsonResponse(order_serializer.data, status=201)
+            else:
+                return JsonResponse({'message': 'Invalid input'}, status=405)
+        except ValidationError:
+            return JsonResponse({'message': 'Invalid input'}, status=405)
+
+    elif request.method == 'DELETE':
+        try:
+            order = Order.objects.get(orderId=orderId)
+            order.delete()
+            return JsonResponse({'message': 'Order deleted successfully'}, status=200)
+        except ObjectDoesNotExist:
+            return JsonResponse({'message': 'Invalid orderId'}, status=400)
+
+
+
