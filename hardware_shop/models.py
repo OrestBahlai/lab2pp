@@ -1,49 +1,37 @@
 from django.db import models
 
 
-class Category(models.Model):
-    name = models.CharField(max_length=250)
-
-    def __str__(self):
-        return str(self.name)
-
-
 class Product(models.Model):
+    productId = models.AutoField(primary_key=True)
     name = models.CharField(max_length=250)
     status = models.CharField(max_length=250)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.CharField(max_length=250)
 
     def __str__(self):
-        return str(self.name)
+        return str(self.productId) + ', ' + str(self.name) + ', ' + str(self.status)
 
 
 class User(models.Model):
+    userId = models.AutoField(primary_key=True)
     username = models.CharField(unique=True, max_length=250)
     firstname = models.CharField(max_length=250)
     lastname = models.CharField(max_length=250)
-    password = models.CharField(max_length=250)
-    user_status = models.IntegerField()
-
-    def __str__(self):
-        return str(self.username)
-
-
-class Customer(models.Model):
     email = models.CharField(max_length=250)
     phone = models.CharField(max_length=250)
-    username = models.OneToOneField(User, on_delete=models.CASCADE)
+    address = models.CharField(max_length=250)
 
     def __str__(self):
-        return str(self.username)
+        return str(self.userId) + ', ' + str(self.username)
 
 
 class Order(models.Model):
+    orderId = models.AutoField(primary_key=True)
     quantity = models.IntegerField()
     status = models.CharField(max_length=250)
     shipDate = models.DateTimeField()
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product)
 
     def __str__(self):
-        return str(self.customer) + ' ' + str(self.shipDate)
+        return str(self.orderId) + ' ' + str(self.user) + ' ' + str(self.shipDate)
 

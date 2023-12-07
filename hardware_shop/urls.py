@@ -1,7 +1,7 @@
-from django.conf.urls import url
-from hardware_shop import views
+from django.urls import path
+from hardware_shop.views import productApi, userApi
 
-urlpatterns=[
-    url(r'^product$', views.productApi),
-    url(r'^product/([0-9]+)$')
+urlpatterns = [
+    path('product/<int:productId>', productApi, name='product_detail'),
+    path('user/<int:userId>', userApi, name='user_detail')
 ]
